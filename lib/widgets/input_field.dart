@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
-TextFormField inputBox({String hintText, BuildContext context, TextEditingController controller, bool isPassword = false, Function onTap}) {
+TextFormField inputBox(
+    {String hintText, BuildContext context, TextEditingController controller, bool isPassword = false, Function onTap, Function onChanged, bool maxLength = false, int maxValue}) {
   return TextFormField(
+    maxLengthEnforced: maxLength,
+    maxLength: maxValue,
+    onChanged: onChanged,
     onTap: onTap,
     obscureText: isPassword,
     controller: controller,

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "949847738542",
+    "firebase_url": "https://bridcodes-78072.firebaseio.com",
+    "project_id": "bridcodes-78072",
+    "storage_bucket": "bridcodes-78072.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949847738542:android:1cd811676b7b75efae853f",
+        "android_client_info": {
+          "package_name": "com.rish.bridcodes_task"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949847738542-dshkm8lg0m8860ahga4q7igu40qlg72q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rish.bridcodes_task",
+            "certificate_hash": "eb6a46348626e05bb36d81dce6d703aef40a4a65"
+          }
+        },
+        {
+          "client_id": "949847738542-29o039mndjfrssmfdrb2j4171cotjgfc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTJW9AGiRvsjwt0OZxio6VBzOPBx-4yL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949847738542-29o039mndjfrssmfdrb2j4171cotjgfc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
