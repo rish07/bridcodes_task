@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:bridcodes_task/screens/registration_page.dart';
 import 'package:bridcodes_task/widgets/buildButton.dart';
 import 'package:bridcodes_task/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -26,7 +28,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.75,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -40,6 +42,7 @@ class _SignInState extends State<SignIn> {
         controller: _scrollController,
         reverse: true,
         children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.08),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -52,6 +55,10 @@ class _SignInState extends State<SignIn> {
               GestureDetector(
                 onTap: () {
                   //TODO Route to Navigate to Sign up Page
+                  Navigator.push(
+                    context,
+                    PageTransition(child: RegistrationPage(), type: PageTransitionType.fade),
+                  );
                 },
                 child: Container(
                   height: 20,
@@ -122,7 +129,6 @@ class _SignInState extends State<SignIn> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.05,
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Text(
             'Hello there, sign in to continue',
             style: TextStyle(color: Colors.grey, fontSize: 19),
@@ -134,9 +140,6 @@ class _SignInState extends State<SignIn> {
             'Welcome Back',
             style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
-          )
         ],
       ),
     );

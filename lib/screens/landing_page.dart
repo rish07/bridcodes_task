@@ -20,7 +20,7 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             _showSignIn
                 ? Padding(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.12),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.08),
                     child: Icon(
                       Icons.arrow_back,
                       color: Colors.white,
@@ -32,7 +32,7 @@ class _LandingPageState extends State<LandingPage> {
               duration: Duration(milliseconds: 500),
               bottom: _showSignIn ? 70 : 10,
               right: MediaQuery.of(context).size.width * 0.48,
-              top: _showSignIn ? MediaQuery.of(context).size.height * 0.18 : MediaQuery.of(context).size.height * 0.52,
+              top: _showSignIn ? MediaQuery.of(context).size.height * 0.14 : MediaQuery.of(context).size.height * 0.52,
               child: Text(
                 'Welcome',
                 style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w900),
