@@ -1,8 +1,11 @@
 import 'package:bridcodes_task/screens/dashboard.dart';
+import 'package:bridcodes_task/screens/landing_page.dart';
 import 'package:bridcodes_task/screens/otp_verification.dart';
+import 'package:bridcodes_task/screens/sign_in.dart';
 import 'package:bridcodes_task/widgets/buildButton.dart';
 import 'package:bridcodes_task/widgets/dialog.dart';
 import 'package:bridcodes_task/widgets/input_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,6 +31,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool _validatePhone = false;
   bool _validatePassword = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Firestore _db = Firestore.instance;
 
   Future<bool> _loginUser(String phone, BuildContext context) async {
     _auth.verifyPhoneNumber(
@@ -36,9 +40,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
         verificationCompleted: (AuthCredential credential) async {
           AuthResult result = await _auth.signInWithCredential(credential);
           FirebaseUser user = result.user;
-          UserUpdateInfo updateUser = UserUpdateInfo();
-          updateUser.displayName = _nameController.text;
-          await user.updateProfile(updateUser);
+          await _db.collection('users').add({
+            "userName": _nameController.text,
+            "userUID": user.uid,
+          });
           await user.updatePassword(_passwordController.text);
           await user.updateEmail(_emailController.text);
 
@@ -308,6 +313,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ),
                             GestureDetector(
                               onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(child: LandingPage(), type: PageTransitionType.fade),
+                                );
                                 //TODO Route to Navigate to Sign in Page
                               },
                               child: Container(

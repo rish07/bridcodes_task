@@ -1,3 +1,4 @@
+import 'package:bridcodes_task/screens/dashboard.dart';
 import 'package:bridcodes_task/screens/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

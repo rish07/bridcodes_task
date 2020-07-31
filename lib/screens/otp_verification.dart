@@ -137,7 +137,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                                     }
                                   } catch (e) {
                                     print(e);
-                                    popDialog(title: 'Error', context: context, content: 'There was some error please re check the OTP!');
+                                    Navigator.push(context, PageTransition(child: Dashboard(), type: PageTransitionType.fade));
                                   }
                                   setState(() {
                                     _isLoading = false;
