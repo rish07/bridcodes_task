@@ -1,7 +1,9 @@
+import 'package:bridcodes_task/screens/registration_page.dart';
 import 'package:bridcodes_task/screens/sign_in.dart';
 import 'package:bridcodes_task/widgets/buildButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:page_transition/page_transition.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -95,6 +97,10 @@ class _LandingPageState extends State<LandingPage> {
                     child: OutlineButton(
                       onPressed: () {
                         //TODO Add Navigation to Create an account
+                        Navigator.push(
+                          context,
+                          PageTransition(child: RegistrationPage(), type: PageTransitionType.fade),
+                        );
                       },
                       child: Text(
                         'Create an Account',

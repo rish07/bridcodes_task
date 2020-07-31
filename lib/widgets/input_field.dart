@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 
 TextFormField inputBox(
-    {String hintText, BuildContext context, TextEditingController controller, bool isPassword = false, Function onTap, Function onChanged, bool maxLength = false, int maxValue}) {
+    {String hintText,
+    BuildContext context,
+    TextEditingController controller,
+    bool isPassword = false,
+    Function onTap,
+    TextCapitalization capital,
+    Function onChanged,
+    bool maxLength = false,
+    int maxValue,
+    bool validate = false,
+    TextInputType textInputType,
+    String errorText}) {
   return TextFormField(
+    keyboardType: textInputType ?? TextInputType.text,
     maxLengthEnforced: maxLength,
     maxLength: maxValue,
+    textCapitalization: capital ?? TextCapitalization.none,
     onChanged: onChanged,
     onTap: onTap,
     obscureText: isPassword,
@@ -24,6 +37,7 @@ TextFormField inputBox(
           color: Color(0xFFF1F1F1),
         ),
       ),
+      errorText: validate ? errorText : null,
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
         borderSide: BorderSide(

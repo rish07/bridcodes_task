@@ -1,10 +1,14 @@
+import 'package:bridcodes_task/screens/dashboard.dart';
 import 'package:bridcodes_task/screens/otp_verification.dart';
 import 'package:bridcodes_task/widgets/buildButton.dart';
+import 'package:bridcodes_task/widgets/dialog.dart';
 import 'package:bridcodes_task/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:regexed_validator/regexed_validator.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -19,36 +23,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
   int _radioValue;
   bool _isActive = false;
   bool _isLoading = false;
+  bool _validateName = false;
+  bool _validateEmail = false;
+  bool _validatePhone = false;
+  bool _validatePassword = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future<FirebaseUser> handleSignUp(email, password) async {
-    AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-    final FirebaseUser user = result.user;
-
-    assert(user != null);
-    assert(await user.getIdToken() != null);
-    print(user.displayName);
-    print(user.email);
-    return user;
-  }
 
   Future<bool> _loginUser(String phone, BuildContext context) async {
     _auth.verifyPhoneNumber(
         phoneNumber: phone,
         timeout: Duration(seconds: 60),
         verificationCompleted: (AuthCredential credential) async {
-          Navigator.of(context).pop();
-
           AuthResult result = await _auth.signInWithCredential(credential);
-
           FirebaseUser user = result.user;
+          UserUpdateInfo updateUser = UserUpdateInfo();
+          updateUser.displayName = _nameController.text;
+          await user.updateProfile(updateUser);
+          await user.updatePassword(_passwordController.text);
+          await user.updateEmail(_emailController.text);
 
           if (user != null) {
             print('working');
+            print(user.phoneNumber);
+            Navigator.push(
+              context,
+              PageTransition(child: Dashboard(), type: PageTransitionType.fade),
+            );
           } else {
             print("Error");
           }
-
           //This callback would gets called when verification is done auto maticlly
         },
         verificationFailed: (AuthException exception) {
@@ -59,7 +62,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
             context,
             PageTransition(
                 child: OTPVerification(
+                  email: _emailController.text,
                   verificationID: verificationId,
+                  password: _passwordController.text,
+                  name: _nameController.text,
                 ),
                 type: PageTransitionType.fade),
           );
@@ -130,6 +136,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               height: 10,
                             ),
                             inputBox(
+                                capital: TextCapitalization.words,
+                                validate: _validateName,
+                                errorText: "This field can't be empty!",
                                 hintText: 'Enter your Business Name',
                                 controller: _nameController,
                                 isPassword: false,
@@ -154,7 +163,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             SizedBox(
                               height: 10,
                             ),
-                            inputBox(hintText: 'Enter your Business Email', controller: _emailController, isPassword: false, context: context)
+                            inputBox(
+                              textInputType: TextInputType.emailAddress,
+                              hintText: 'Enter your Business Email',
+                              controller: _emailController,
+                              isPassword: false,
+                              context: context,
+                              validate: _validateEmail,
+                              errorText: "Please enter a valid email ID!",
+                            )
                           ],
                         ),
                         SizedBox(
@@ -171,6 +188,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               height: 10,
                             ),
                             inputBox(
+                                textInputType: TextInputType.phone,
+                                validate: _validatePhone,
+                                errorText: "Please enter a valid phone number",
                                 maxLength: true,
                                 maxValue: 10,
                                 hintText: 'XXXXXXXXXX',
@@ -178,12 +198,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 isPassword: false,
                                 context: context,
                                 onChanged: (value) async {
-                                  if (value.length == 10) {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    await _loginUser("+91" + _phoneNumberController.text, context);
-                                  }
+                                  if (value.length == 10) {}
                                 })
                           ],
                         ),
@@ -197,7 +212,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             SizedBox(
                               height: 10,
                             ),
-                            inputBox(hintText: 'Enter your Password', controller: _passwordController, isPassword: true, context: context)
+                            inputBox(
+                                hintText: 'Enter your Password',
+                                controller: _passwordController,
+                                isPassword: true,
+                                context: context,
+                                validate: _validatePassword,
+                                errorText: "Please enter a password with more than 6 digits!")
                           ],
                         ),
                         SizedBox(
@@ -243,12 +264,25 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         ),
                         buildButton(
                           onPress: () async {
-                            handleSignUp(_emailController.text, _passwordController.text).then((value) {
-                              Navigator.push(
-                                context,
-                                PageTransition(child: OTPVerification(), type: PageTransitionType.fade),
-                              );
+                            setState(() {
+                              _nameController.text.isEmpty ? _validateName = true : _validateName = false;
+                              !validator.email(_emailController.text) || _emailController.text.isEmpty ? _validateEmail = true : _validateEmail = false;
+                              _phoneNumberController.text.isEmpty || _phoneNumberController.text.length != 10 ? _validatePhone = true : _validatePhone = false;
+                              _passwordController.text.isEmpty || _passwordController.text.length < 6 ? _validatePassword = true : _validatePassword = false;
+                              if (_radioValue != 1) {
+                                popDialog(
+                                  title: 'Error',
+                                  content: 'Please accept the terms and conditions!',
+                                  context: context,
+                                );
+                              }
                             });
+                            if (!_validatePassword && !_validatePhone && !_validateEmail && !_validateName && _radioValue == 1) {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await _loginUser("+91" + _phoneNumberController.text, context);
+                            }
                           },
                           backgroundColor: Colors.black,
                           child: Text(

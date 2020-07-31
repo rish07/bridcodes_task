@@ -1,3 +1,4 @@
+import 'package:bridcodes_task/screens/dashboard.dart';
 import 'package:bridcodes_task/widgets/buildButton.dart';
 import 'package:bridcodes_task/widgets/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,12 +6,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 
 class OTPVerification extends StatefulWidget {
   final String verificationID;
+  final String password;
+  final String name;
+  final String email;
 
-  const OTPVerification({Key key, this.verificationID}) : super(key: key);
+  const OTPVerification({Key key, this.verificationID, this.password, this.name, this.email}) : super(key: key);
   @override
   _OTPVerificationState createState() => _OTPVerificationState();
 }
@@ -115,10 +120,18 @@ class _OTPVerificationState extends State<OTPVerification> {
                                   try {
                                     AuthResult result = await _auth.signInWithCredential(credential);
                                     FirebaseUser user = result.user;
-
+                                    UserUpdateInfo updateUser = UserUpdateInfo();
+                                    updateUser.displayName = widget.name;
+                                    await user.updatePassword(widget.password);
+                                    await user.updateEmail(widget.email);
+                                    await user.updateProfile(updateUser);
                                     if (user != null) {
                                       print('working');
                                       print(user.phoneNumber);
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(child: Dashboard(), type: PageTransitionType.fade),
+                                      );
                                     } else {
                                       print("Error");
                                     }
